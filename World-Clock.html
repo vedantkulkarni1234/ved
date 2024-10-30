@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Clock Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --text-color: #ecf0f1;
+            --background-color: #1a1a1a;
+            --card-background: rgba(255, 255, 255, 0.1);
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="light"] {
+            --primary-color: #ecf0f1;
+            --secondary-color: #bdc3c7;
+            --accent-color: #3498db;
+            --text-color: #2c3e50;
+            --background-color: #f5f6fa;
+            --card-background: rgba(255, 255, 255, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--background-color);
+            color: var(--text-color);
+            transition: background-color var(--transition-speed);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: var(--primary-color);
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+        }
+
+        /* Clock Grid */
+        .clock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Clock Widget */
+        .clock-widget {
+            background: var(--card-background);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform var(--transition-speed);
+        }
+
+        .clock-widget:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Region Groups in Select */
+        .city-select optgroup {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        /* Clock Display */
+        .clock-display {
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .time {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .date {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+        }
+
+        /* City Selection */
+        .city-select {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--secondary-color);
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Weather Info */
+        .weather-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .weather-icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        /* Status Indicator */
+        .status {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #2ecc71;
+            margin-right: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .time {
+                font-size: 2rem;
+            }
+
+            .nav-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="nav-content">
+                <div class="nav-title">World Clock Dashboard</div>
+                <button class="theme-toggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="clock-grid">
+            <div class="clock-widget">
+                <select class="city-select" aria-label="Select first city">
+                    <option value="UTC">Select City</option>
+                </select>
+                <div class="clock-display">
+                    <div class="time">00:00:00</div>
+                    <div class="date">Monday, January 1</div>
+                </div>
+                <div class="weather-info">
+                    <i class="fas fa-cloud weather-icon"></i>
+                    <span>Loading weather...</span>
+                </div>
+                <div class="status">
+                    <div class="status-dot"></div>
+                    <span>Live updates active</span>
+                </div>
+            </div>
+
+            <div class="clock-widget">
+                <select class="city-select" aria-label="Select second city">
+                    <option value="UTC">Select City</option>
+                </select>
+                <div class="clock-display">
+                    <div class="time">00:00:00</div>
+                    <div class="date">Monday, January 1</div>
+                </div>
+                <div class="weather-info">
+                    <i class="fas fa-cloud weather-icon"></i>
+                    <span>Loading weather...</span>
+                </div>
+                <div class="status">
+                    <div class="status-dot"></div>
+                    <span>Live updates active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WebAssembly module for time calculations
+        const wasmCode = new Uint8Array([
+            0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
+            0x01, 0x07, 0x01, 0x60, 0x02, 0x7c, 0x7c, 0x01,
+            0x7c, 0x03, 0x02, 0x01, 0x00, 0x07, 0x07, 0x01,
+            0x03, 0x61, 0x64, 0x64, 0x00, 0x00, 0x0a, 0x09,
+            0x01, 0x07, 0x00, 0x20, 0x00, 0x20, 0x01, 0x58,
+            0x0b
+        ]);
+
+        // Extended time zones data with Indian, Canadian, and German cities
+        const timeZones = [
+            // Indian Cities
+            { city: "Mumbai", offset: 5.5, zone: "Asia/Kolkata", region: "India" },
+            { city: "New Delhi", offset: 5.5, zone: "Asia/Kolkata", region: "India" },
+            { city: "Bangalore", offset: 5.5, zone: "Asia/Kolkata", region: "India" },
+            { city: "Chennai", offset: 5.5, zone: "Asia/Kolkata", region: "India" },
+            { city: "Kolkata", offset: 5.5, zone: "Asia/Kolkata", region: "India" },
+            { city: "Hyderabad", offset: 5.5, zone: "Asia/Kolkata", region: "India" },
+            
+            // Canadian Cities
+            { city: "Toronto", offset: -4, zone: "America/Toronto", region: "Canada" },
+            { city: "Vancouver", offset: -7, zone: "America/Vancouver", region: "Canada" },
+            { city: "Montreal", offset: -4, zone: "America/Montreal", region: "Canada" },
+            { city: "Calgary", offset: -6, zone: "America/Edmonton", region: "Canada" },
+            { city: "Ottawa", offset: -4, zone: "America/Toronto", region: "Canada" },
+            
+            // German Cities
+            { city: "Berlin", offset: 2, zone: "Europe/Berlin", region: "Germany" },
+            { city: "Munich", offset: 2, zone: "Europe/Berlin", region: "Germany" },
+            { city: "Hamburg", offset: 2, zone: "Europe/Berlin", region: "Germany" },
+            { city: "Frankfurt", offset: 2, zone: "Europe/Berlin", region: "Germany" },
+            { city: "Cologne", offset: 2, zone: "Europe/Berlin", region: "Germany" },
+            
+            // Major World Cities
+            { city: "New York", offset: -4, zone: "America/New_York", region: "United States" },
+            { city: "London", offset: 1, zone: "Europe/London", region: "United Kingdom" },
+            { city: "Tokyo", offset: 9, zone: "Asia/Tokyo", region: "Japan" },
+            { city: "Sydney", offset: 10, zone: "Australia/Sydney", region: "Australia" },
+            { city: "Paris", offset: 2, zone: "Europe/Paris", region: "France" }
+        ];
+
+        // Initialize WebAssembly Module
+        WebAssembly.instantiate(wasmCode).then(wasmModule => {
+            window.wasmInstance = wasmModule.instance;
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.querySelector('.theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            themeToggle.innerHTML = newTheme === 'light' 
+                ? '<i class="fas fa-moon"></i>' 
+                : '<i class="fas fa-sun"></i>';
+        });
+
+        // Populate city selectors with grouped options
+        function populateCitySelectors() {
+            const citySelects = document.querySelectorAll('.city-select');
+            const regions = [...new Set(timeZones.map(tz => tz.region))].sort();
+            
+            citySelects.forEach(select => {
+                // Clear existing options except the first one
+                select.innerHTML = '<option value="UTC">Select City</option>';
+                
+                regions.forEach(region => {
+                    const group = document.createElement('optgroup');
+                    group.label = region;
+                    
+                    const citiesInRegion = timeZones
+                        .filter(tz => tz.region === region)
+                        .sort((a, b) => a.city.localeCompare(b.city));
+                    
+                    citiesInRegion.forEach(tz => {
+                        const option = document.createElement('option');
+                        option.value = tz.zone;
+                        option.textContent = tz.city;
+                        group.appendChild(option);
+                    });
+                    
+                    select.appendChild(group);
+                });
+            });
+        }
+
+        // Update clocks
+        function updateClocks() {
+            const clockDisplays = document.querySelectorAll('.clock-widget');
+            
+            clockDisplays.forEach((widget, index) => {
+                const select = widget.querySelector('.city-select');
+                const timeDisplay = widget.querySelector('.time');
+                const dateDisplay = widget.querySelector('.date');
+                
+                const selectedZone = select.value;
+                const now = new Date();
+                
+                try {
+                    const timeString = now.toLocaleTimeString('en-US', {
+                        timeZone: selectedZone,
+                        hour12: false,
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                    
+                    const dateString = now.toLocaleDateString('en-US', {
+                        timeZone: selectedZone,
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    
+                    timeDisplay.textContent = timeString;
+                    dateDisplay.textContent = dateString;
+                    
+                    updateWeather(widget, selectedZone);
+                } catch (error) {
+                    console.error('Error updating clock:', error);
+                    timeDisplay.textContent = 'Error';
+                    dateDisplay.textContent = 'Invalid time zone';
+                }
+            });
+        }
+
+        // Simulate weather updates with region-specific variations
+        function updateWeather(widget, timeZone) {
+            const weatherInfo = widget.querySelector('.weather-info');
+            const weatherIcons = ['fa-sun', 'fa-cloud', 'fa-cloud-rain', 'fa-cloud-sun'];
+            const temperatures = ['22°C', '18°C', '25°C', '20°C', '30°C', '15°C', '28°C'];
+            
+            // Get region-specific weather tendencies
+            const selectedCity = timeZones.find(tz => tz.zone === timeZone);
+            let weatherIcon = weatherIcons[Math.floor(Math.random() * weatherIcons.length)];
+            let temperature = temperatures[Math.floor(Math.random() * temperatures.length)];
+            
+            // Adjust weather based on region
+            if (selectedCity) {
+                switch (selectedCity.region) {
+                    case 'India':
+                        temperature = `${Math.floor(25 + Math.random() * 10)}°C`; // Warmer temperatures
+                        break;
+                    case 'Canada':
+                        temperature = `${Math.floor(5 + Math.random() * 20)}°C`; // Cooler temperatures
+                        break;
+                    case 'Germany':
+                        temperature = `${Math.floor(10 + Math.random() * 15)}°C`; // Moderate temperatures
+                        break;
+                }
+            }
+            
+            weatherInfo.innerHTML = `
+                <i class="fas ${weatherIcon} weather-icon"></i>
+                <span>${temperature}</span>
+            `;
+        }
+
+        // Time difference calculator
+        function calculateTimeDifference(zone1, zone2) {
+            const now = new Date();
+            try {
+                const time1 = new Date(now.toLocaleString('en-US', { timeZone: zone1 }));
+                const time2 = new Date(now.toLocaleString('en-US', { timeZone: zone2 }));
+                const diffHours = (time2 - time1) / (1000 * 60 * 60);
+                return Math.round(diffHours * 100) / 100;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        // Update time difference when cities are selected
+        function updateTimeDifference() {
+            const selects = document.querySelectorAll('.city-select');
+            const zone1 = selects[0].value;
+            const zone2 = selects[1].value;
+            
+            if (zone1 !== 'UTC' && zone2 !== 'UTC') {
+                const diff = calculateTimeDifference(zone1, zone2);
+                if (diff !== null) {
+                    const diffText = `Time difference: ${Math.abs(diff)} hours`;
+                    selects[1].parentElement.querySelector('.status span').textContent = diffText;
+                }
+            }
+        }
+
+        // Initialize the application
+        function init() {
+            // Set saved theme
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeToggle.innerHTML = savedTheme === 'light' 
+                ? '<i class="fas fa-moon"></i>' 
+                : '<i class="fas fa-sun"></i>';
+            
+            // Populate city selectors
+            populateCitySelectors();
+            
+            // Set saved city preferences
+            const savedCities = JSON.parse(localStorage.getItem('savedCities') || '[]');
+            if (savedCities.length === 2) {
+                const selects = document.querySelectorAll('.city-select');
+                selects[0].value = savedCities[0];
+                selects[1].value = savedCities[1];
+            }
+            
+            // Start clock updates
+            updateClocks();
+            setInterval(updateClocks, 1000);
+            
+            // Add event listeners for city selection
+            document.querySelectorAll('.city-select').forEach(select => {
+                select.addEventListener('change', () => {
+                    const cities = Array.from(document.querySelectorAll('.city-select')).map(s => s.value);
+                    localStorage.setItem('savedCities', JSON.stringify(cities));
+                    updateTimeDifference();
+                });
+            });
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Alt + T to toggle theme
+            if (e.altKey && e.key === 't') {
+                themeToggle.click();
+            }
+        });
+
+        // Handle errors gracefully
+        window.addEventListener('error', (e) => {
+            console.error('Application error:', e.error);
+            // Update status indicators to show error state
+            document.querySelectorAll('.status-dot').forEach(dot => {
+                dot.style.background = '#e74c3c';
+            });
+        });
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
